@@ -1,0 +1,64 @@
+package com.example.a7minworkout
+
+import android.app.Dialog
+import android.database.sqlite.SQLiteOpenHelper
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import kotlinx.android.synthetic.main.activity_finish.*
+import kotlinx.android.synthetic.main.dialog_custom.*
+import java.text.SimpleDateFormat
+import java.util.*
+
+class FinishActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_finish)
+
+        setSupportActionBar(toolbar_finish_activity)
+        val actionbar = supportActionBar
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true)
+        }
+        toolbar_finish_activity.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        btn_finish.setOnClickListener {
+            finish()
+        }
+        addDateToDatabase()
+    }
+
+    private fun addDateToDatabase(){
+        val calendar = Calendar.getInstance()
+        val dateTime = calendar.time
+        Log.i("DATE:","" + dateTime)
+
+        val sdf = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault())
+        val date = sdf.format(dateTime)
+        val dbHandler = SqliteOpenHelper(this,null)
+        dbHandler.addDate(date)
+        Log.i("DATE:","Added")
+    }
+
+    @Override
+    override fun onBackPressed(){
+
+        customDialogFunction()
+
+    }
+
+    private fun customDialogFunction(){
+        val customDialog = Dialog(this)
+        customDialog.setContentView(R.layout.dialog_custom)
+        customDialog.btn_yes.setOnClickListener {
+            finish()
+            customDialog.dismiss()
+        }
+        customDialog.btn_no.setOnClickListener {
+            customDialog.dismiss()
+        }
+        customDialog.show()
+    }
+
+}
